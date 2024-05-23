@@ -1,32 +1,32 @@
 export interface TaskResponse {
   message: string;
-  data:    Task;
+  data: Task;
 }
 
 export interface TasksResponse {
   message: string;
-  data:    Task[];
+  data: Task[];
 }
 
 export interface Task {
-  title:       string;
+  uuid: string;
+  title: string;
   description: string;
-  status:      boolean;
-  _id:         string;
-  createdAt:   Date;
-  updatedAt:   Date;
-  __v:         number;
+  status: boolean;
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AddTaskRequest {
-  _id?:         string;
-  title:       string;
+  _id: string;
+  uuid: string;
+  title: string;
   description: string;
-  status:      boolean;
+  status: boolean;
 }
 
 export interface UpdateTaskRequest {
-  _id?:         string;
-  status:      boolean;
+  _id: string;
+  status: boolean;
 }
-

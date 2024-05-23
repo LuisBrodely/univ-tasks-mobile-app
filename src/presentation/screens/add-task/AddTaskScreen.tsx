@@ -1,52 +1,70 @@
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { AddTaskRequest } from '../../../models/Task'
-import { useState } from 'react'
-import { AppButton } from '../../components/button/AppButton'
-import { AppTextInput } from '../../components/input/AppTextInput';
-import { useAddTaskMutation } from '../../../services/tasks';
-import { Alert } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AddTaskRequest } from "../../../models/Task";
+import { useState } from "react";
+import { AppButton } from "../../components/button/AppButton";
+import { AppTextInput } from "../../components/input/AppTextInput";
+import { useAddTaskMutation } from "../../../services/tasks";
+import { Alert, View, Text, Button } from "react-native";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import { useNetworkStatus } from "../../../hooks/useNetworkStatus";
+import { addLocalTask } from "../../../features/tasks/tasksSlice";
+import { setNetworkStatus } from "../../../features/network/networkSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 export const AddTaskScreen = () => {
-
-  const [addTask] = useAddTaskMutation()
-
+  const [addTask] = useAddTaskMutation();
+  const isConnected = useAppSelector((state) => state.network.isConnected);
+  const dispatch = useAppDispatch();
 
   const [task, setTask] = useState<AddTaskRequest>({
-    title: '',
-    description: '',
-    status: false
-  })
+    _id: '',
+    uuid: uuidv4(),
+    title: "",
+    description: "",
+    status: false,
+  });
 
-  const hadleAddTask = () => {
-    if (!task.title && !task.description) {
-      Alert.alert('Title and Description are required')
-      return
+  const handleAddTask = async () => {
+    if (!task.title || !task.description) {
+      Alert.alert("Title and Description are required");
+      return;
     }
-    addTask(task)
+    
+    if (isConnected) {
+      addTask(task);
+    } else {
+      dispatch(addLocalTask(task));
+    }
 
     setTask({
-      title: '',
-      description: '',
-      status: false
-    })
-  }
+      _id: '',
+      uuid: uuidv4(),
+      title: "",
+      description: "",
+      status: false,
+    });
+  };
 
   return (
     <SafeAreaView style={{ paddingHorizontal: 24 }}>
-      <AppTextInput 
+      <View>
+        <Text>
+          Network Status: {isConnected ? "Connected" : "Disconnected"}
+        </Text>
+        <Button title="Sync" onPress={() => dispatch(setNetworkStatus(!isConnected))} />
+      </View>
+      <AppTextInput
         label="Title"
         value={task.title}
         onChangeText={(text) => setTask({ ...task, title: text })}
       />
-      <AppTextInput 
+      <AppTextInput
         label="Description"
         value={task.description}
         onChangeText={(text) => setTask({ ...task, description: text })}
       />
-      <AppButton 
-        title="Add Task"
-        onPress={hadleAddTask}
-      />
+      <AppButton title="Add Task" onPress={handleAddTask} />
     </SafeAreaView>
-  )
-}
+  );
+};
