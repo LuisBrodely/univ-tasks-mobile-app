@@ -11,7 +11,7 @@ import {
   useGetTasksQuery,
   useUpdateTaskMutation,
 } from "../../../services/tasks";
-import { AddTaskRequest, Task, UpdateTaskRequest } from "../../../models/Task";
+import { UpdateTaskRequest } from "../../../models/Task";
 import { useNetworkStatus } from "../../../hooks/useNetworkStatus";
 import {
   updateLocalTask,
@@ -29,7 +29,8 @@ export const HomeScreen = () => {
   const { data, error, isLoading } = useGetTasksQuery();
   const [deleteTask] = useDeleteTaskMutation();
   const [updateTask] = useUpdateTaskMutation();
-  const isConnected = useAppSelector((state) => state.network.isConnected);
+  // const isConnected = useAppSelector((state) => state.network.isConnected);
+  const isConnected = useNetworkStatus();
   const dispatch = useAppDispatch();
   const localTasks = useAppSelector(selectLocalTasks);
 

@@ -13,5 +13,5 @@ export const useNetworkStatus = () => {
     return () => unsubscribe();
   }, []);
 
-  return {isConnected, setIsConnected};
+  return isConnected;
 };

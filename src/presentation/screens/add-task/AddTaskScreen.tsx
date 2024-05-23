@@ -14,7 +14,8 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 export const AddTaskScreen = () => {
   const [addTask] = useAddTaskMutation();
-  const isConnected = useAppSelector((state) => state.network.isConnected);
+  // const isConnected = useAppSelector((state) => state.network.isConnected);
+  const isConnected = useNetworkStatus();
   const dispatch = useAppDispatch();
 
   const [task, setTask] = useState<AddTaskRequest>({
@@ -30,7 +31,7 @@ export const AddTaskScreen = () => {
       Alert.alert("Title and Description are required");
       return;
     }
-    
+
     if (isConnected) {
       addTask(task);
     } else {
